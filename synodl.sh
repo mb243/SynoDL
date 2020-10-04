@@ -4,7 +4,7 @@
 # This script is based on the Synology Download Station V3 API published at
 # http://download.synology.com/download/other/Synology_Download_Station_Official_API_V3.pdf
 # NOTE: A newer version of this guide is here:
-# http://download.synology.com/download/Document/DeveloperGuide/Synology_Download_Station_Web_API.pdf
+# https://global.download.synology.com/download/Document/Software/DeveloperGuide/Package/DownloadStation/All/enu/Synology_Download_Station_Web_API.pdf
 # but does not take some of it's recommendations, specifically that of checking the location
 # of APIs from the query. It assumes these APIs are in fixed locations.
 
@@ -23,6 +23,16 @@ PASS="password"
 # Each URL should be on a seperate line
 # Possible issue if it contains the & character
 FILE="./urls.txt"
+# Copy fail url
+FAILFILE="./urls_fail.txt"
+
+# Check if url file not empty 
+EMPTYFILE=`grep -r -e http -e ftp -- $FILE`
+if [ "$EMPTYFILE" = "" ]
+then
+ echo "Your urls file is empty"
+ exit 1
+fi
 
 # Verify API with DM
 echo -n "Verifying API ... "
@@ -50,11 +60,13 @@ then
  echo "ok"
  else
  echo "fail"
+ echo $line > $FAILFILE
  fi
  done < $FILE
  # Done. Log out (invalidate SID)
  # Note: Since logging out, don't really care to check the response.
  echo -n "Logging out of API ... "
+ echo "" > $FILE #Empty url file
  wget -qO - "$SYNO/webapi/auth.cgi?api=SYNO.API.Auth&version=1&method=logout&session=DownloadStation" > /dev/null
  echo "done."
  else
