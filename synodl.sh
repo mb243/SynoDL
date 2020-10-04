@@ -33,7 +33,7 @@ then
  echo "ok"
  # Authenticate to DM
  echo -n "Authenticating to API ... "
- SID=`wget -qO - "$SYNO/webapi/auth.cgi?api=SYNO.API.Auth&version=2&method=login&account=$USER&passwd=$PASS&session=DownloadStation&format=sid" | grep 'sid' | awk -F" '{print $6}'`
+ SID=`wget -qO - "$SYNO/webapi/auth.cgi?api=SYNO.API.Auth&version=2&method=login&account=$USER&passwd=$PASS&session=DownloadStation&format=sid" | grep 'sid' | awk -F\" '{print $6}'`
  if [ "$SID" != "" ]
  then
  echo "ok"
